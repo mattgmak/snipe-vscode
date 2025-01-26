@@ -14,8 +14,16 @@
   "contributes": {
     "commands": [
       {
-        "command": "snipe-vscode.helloWorld",
-        "title": "Hello World"
+        "command": "snipe-vscode.switchTab",
+        "title": "Snipe: Switch Tab"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "snipe-vscode.switchTab",
+        "key": "ctrl+t",
+        "mac": "cmd+t",
+        "when": "editorTextFocus || editorFocus"
       }
     ]
   },
