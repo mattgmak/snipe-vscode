@@ -1,14 +1,9 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 
-interface TabItem {
-  label: string;
-  description?: string;
+interface TabItem extends vscode.QuickPickItem {
   tabGroup: vscode.TabGroup;
   tab: vscode.Tab;
   shortcut?: string;
-  kind?: vscode.QuickPickItemKind;
 }
 
 // Priority keys similar to snipe.nvim's dictionary
@@ -25,20 +20,23 @@ function formatLabel(label: string, shortcut: string): string {
   if (!shortcut) {
     return label;
   }
-  // Using a keyboard symbol and formatting the shortcut in a box-like style
-  return `⌨ [${shortcut.toUpperCase()}] ${label}`;
+
+  // Get the configuration for uppercase/lowercase shortcuts
+  const useUpperCase = vscode.workspace
+    .getConfiguration("snipe-vscode")
+    .get("uppercaseShortcuts", true);
+
+  // Format the shortcut based on the case preference
+  const formattedShortcut = useUpperCase
+    ? shortcut.toUpperCase()
+    : shortcut.toLowerCase();
+
+  // Using ANSI codes for colored keyboard-style shortcut formatting
+  return `[${formattedShortcut}] ${label}`;
 }
 
 // This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  // This line of code will only be executed once when your extension is activated
-  console.log("snipe-vscode is now active");
-
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with registerCommand
-  // The commandId parameter must match the command field in package.json
   let disposable = vscode.commands.registerCommand(
     "snipe-vscode.switchTab",
     async () => {
@@ -93,6 +91,7 @@ export function activate(context: vscode.ExtensionContext) {
             tabGroup: group,
             tab,
             shortcut,
+            // iconPath: vscode.ThemeIcon.File,
           });
         });
       });
@@ -104,15 +103,15 @@ export function activate(context: vscode.ExtensionContext) {
         "Select tab to switch to... (type shortcut key to switch instantly)";
       quickPick.matchOnDescription = true;
 
-      // Handle keyboard shortcuts
+      // Handle alias shortcuts
       quickPick.onDidChangeValue((value) => {
+        quickPick.hide();
         const shortcutTab = allTabs.find(
           (tab) =>
             tab.shortcut === value.toLowerCase() &&
             tab.kind !== vscode.QuickPickItemKind.Separator
         );
         if (shortcutTab) {
-          quickPick.hide();
           if (shortcutTab.tab.input instanceof vscode.TabInputText) {
             vscode.window.showTextDocument(shortcutTab.tab.input.uri, {
               preview: false,
@@ -123,7 +122,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
       });
 
-      // Handle normal selection
+      // Handle enter key
       quickPick.onDidAccept(async () => {
         const selectedTab = quickPick.selectedItems[0];
         if (
@@ -147,5 +146,4 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}

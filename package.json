@@ -1,16 +1,16 @@
 {
   "name": "snipe-vscode",
-  "displayName": "snipe.vscode",
+  "displayName": "snipe-vscode",
   "description": "Quick tabs switching inspired by snipe.nvim",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.90.0"
+    "vscode": "^1.85.0"
   },
   "categories": [
     "Other"
   ],
   "activationEvents": [],
-  "main": "./out/extension.js",
+  "main": "./out/snipe.js",
   "contributes": {
     "commands": [
       {
@@ -24,7 +24,12 @@
         "snipe-vscode.showCurrentTab": {
           "type": "boolean",
           "default": false,
-          "description": "Show the currently active tab in the tab switcher"
+          "description": "Show the current tab in the tab list"
+        },
+        "snipe-vscode.uppercaseShortcuts": {
+          "type": "boolean",
+          "default": true,
+          "description": "Display shortcuts in uppercase (true) or lowercase (false)"
         }
       }
     },
@@ -38,22 +43,20 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "pnpm run compile",
+    "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "pretest": "pnpm run compile && pnpm run lint",
-    "lint": "eslint src",
-    "test": "vscode-test"
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.96.0",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "20.x",
-    "@typescript-eslint/eslint-plugin": "^8.17.0",
-    "@typescript-eslint/parser": "^8.17.0",
-    "eslint": "^9.16.0",
-    "typescript": "^5.7.2",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
+    "@types/vscode": "^1.85.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
   }
 }
