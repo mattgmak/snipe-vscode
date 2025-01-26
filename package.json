@@ -18,6 +18,16 @@
         "title": "Snipe: Switch Tab"
       }
     ],
+    "configuration": {
+      "title": "Snipe VSCode",
+      "properties": {
+        "snipe-vscode.showCurrentTab": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show the currently active tab in the tab switcher"
+        }
+      }
+    },
     "keybindings": [
       {
         "command": "snipe-vscode.switchTab",
