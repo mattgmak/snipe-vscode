@@ -49,6 +49,19 @@ export function activate(context: vscode.ExtensionContext) {
         .getConfiguration("snipe-vscode")
         .get("showCurrentTab", false);
       const activeTab = vscode.window.tabGroups.activeTabGroup.activeTab;
+      const config = vscode.workspace.getConfiguration();
+      const iconTheme = config.get("workbench.iconTheme");
+      vscode.extensions.all.forEach((ext) => {
+        if (ext.packageJSON.contributes?.iconThemes) {
+          const id = ext.packageJSON.contributes.iconThemes[0].id;
+          if (id === iconTheme) {
+            console.log(ext.packageJSON);
+            const extId = ext.id;
+          }
+        }
+      });
+      // const ext = vscode.extensions.getExtension("vscode.vscode-theme-seti")
+      // console.log(ext.packageJSON.contributes.iconThemes[0].id) // 'vs-seti'
 
       // Collect all tabs from all groups with dividers
       tabGroups.all.forEach((group, groupIndex) => {
@@ -91,7 +104,7 @@ export function activate(context: vscode.ExtensionContext) {
             tabGroup: group,
             tab,
             shortcut,
-            // iconPath: vscode.ThemeIcon.File,
+            iconPath: vscode.ThemeIcon.File,
           });
         });
       });
