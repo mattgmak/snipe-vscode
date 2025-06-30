@@ -1,3 +1,4 @@
+import path from "path";
 import * as vscode from "vscode";
 
 interface TabItem extends vscode.QuickPickItem {
@@ -37,6 +38,20 @@ function formatLabel(label: string, shortcut: string): string {
 
 // This method is called when your extension is activated
 export function activate(context: vscode.ExtensionContext) {
+  const allLanguageContributes = vscode.extensions.all
+    .map((ext) => {
+      if (ext.packageJSON.contributes?.languages) {
+        return ext.packageJSON.contributes.languages;
+      }
+      return null;
+    })
+    .flat()
+    .filter((language) => language?.id && Array.isArray(language.extensions))
+    .map((language) => {
+      return [language.id, language.extensions];
+    });
+  const allLanguageAssociations = Object.fromEntries(allLanguageContributes);
+  console.log(allLanguageAssociations);
   let disposable = vscode.commands.registerCommand(
     "snipe-vscode.switchTab",
     async () => {
@@ -51,17 +66,27 @@ export function activate(context: vscode.ExtensionContext) {
       const activeTab = vscode.window.tabGroups.activeTabGroup.activeTab;
       const config = vscode.workspace.getConfiguration();
       const iconTheme = config.get("workbench.iconTheme");
-      vscode.extensions.all.forEach((ext) => {
+      let extId = "";
+      let extJSON = {};
+      for (const ext of vscode.extensions.all) {
         if (ext.packageJSON.contributes?.iconThemes) {
           const id = ext.packageJSON.contributes.iconThemes[0].id;
           if (id === iconTheme) {
-            console.log(ext.packageJSON);
-            const extId = ext.id;
+            extId = ext.id;
+            extJSON = ext.packageJSON;
+            const iconThemeId = ext.packageJSON.contributes.iconThemes[0].id;
+            const themePath = path.join(
+              ext.extensionPath,
+              ext.packageJSON.contributes.iconThemes[0].path
+            );
+            const contributes = ext.packageJSON.contributes;
+            console.log(contributes);
+            console.log(iconThemeId);
+            console.log(themePath);
+            break;
           }
         }
-      });
-      // const ext = vscode.extensions.getExtension("vscode.vscode-theme-seti")
-      // console.log(ext.packageJSON.contributes.iconThemes[0].id) // 'vs-seti'
+      }
 
       // Collect all tabs from all groups with dividers
       tabGroups.all.forEach((group, groupIndex) => {
