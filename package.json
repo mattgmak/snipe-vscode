@@ -30,6 +30,18 @@
           "type": "boolean",
           "default": true,
           "description": "Display shortcuts in uppercase (true) or lowercase (false)"
+        },
+        "snipe-vscode.specialCharacterCommands": {
+          "type": "object",
+          "default": {
+            " ": "workbench.action.quickOpen"
+          },
+          "description": "Commands to execute when special characters are typed. Keys are the characters, values are the command names.",
+          "patternProperties": {
+            "^.{1}$": {
+              "type": "string"
+            }
+          }
         }
       }
     },
