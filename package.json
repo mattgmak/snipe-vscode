@@ -2,6 +2,7 @@
   "name": "snipe-vscode",
   "displayName": "snipe-vscode",
   "description": "Quick tabs switching inspired by snipe.nvim",
+  "repository": "https://github.com/mattgmak/snipe-vscode",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.85.0"
